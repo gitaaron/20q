@@ -5,6 +5,9 @@ var express = require('express');
 var request = require('request');
 var cheerio = require('cheerio');
 var setup = require('../scripts/setup');
+var fs = require('fs');
+
+var und = require('underscore');
 
 /**
  * the new Router exposed in express 4
@@ -89,6 +92,20 @@ indexRouter.get('/next', function(req, res) {
         });
 
 
+});
+
+
+indexRouter.get('/app', function(req, res) {
+    if(req.query.digits) {
+        var next = fs.readFileSync(__dirname+'/../twilio_views/next.xml').toString();
+        next = und.template(next);
+        res.end(next({option:req.query.digits}));
+
+    } else {
+        var begin = fs.readFileSync(__dirname+'/../twilio_views/begin.xml').toString();
+        begin = und.template(begin);
+        res.end(begin({question_message:"Press 1 for yes and 2 for no"}));
+    }
 });
 
 exports.indexRouter = indexRouter;

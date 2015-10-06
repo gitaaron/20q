@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Say voice="woman" language="en">Welcome to twenty questions, the game!</Say>
+    <Gather timeout="30" numDigits="1" method="get">
+        <Say><%- question_message %></Say>
+    </Gather>
+</Response>

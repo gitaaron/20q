@@ -1,7 +1,7 @@
 var config = {
   development: {
     server: {
-      port: 80
+      port: 3000
     }
   },
   testing: {
