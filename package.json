@@ -1,0 +1,28 @@
+{
+  "name": "20q",
+  "version": "0.0.0",
+  "dependencies": {
+    "body-parser": "~1.0.0",
+    "cheerio": "^0.19.0",
+    "compression": "1.0.1",
+    "errorhandler": "~1.0.0",
+    "express": "~4.0.0-rc2",
+    "jade": "~1.1.5",
+    "method-override": "~1.0.0",
+    "morgan": "~1.0.0",
+    "request": "^2.64.0",
+    "static-favicon": "~1.0.1"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-concurrent": "~0.5.0",
+    "grunt-node-inspector": "~0.1.5",
+    "grunt-contrib-cssmin": "~0.9.0",
+    "matchdep": "~0.3.0",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-contrib-concat": "~0.4.0",
+    "grunt-contrib-less": "~0.11.0"
+  }
+}
