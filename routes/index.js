@@ -47,7 +47,7 @@ function begin(callback) {
                     text:$(a).text()
                 });
             });
-            question = { message: reg.exec(response)[2] + ' Press 1 for animal, 2 for vegetable, 3 for mineral, 4 for other, 5 for unknown or 0 to repeat the question', options: options};
+            question = { message: reg.exec(response)[2] + ' Press 1 for animal, 2 for vegetable, 3 for mineral, 4 for other, 5 for unknown, or press zero to repeat the question', options: options};
             $('a').each(function(i, a) {
                 console.log($(a).text());
             });
@@ -82,7 +82,7 @@ function next(option, callback) {
                     });
                 });
 
-                question = { message: reg.exec(response)[2] + ' Press 1 for yes, 2 for no, 3 for unknown, 4 for irrelevant, 5 for sometimes or 0 to repeat the question', options: options};
+                question = { message: reg.exec(response)[2] + ' Press 1 for yes, 2 for no, 3 for unknown, 4 for irrelevant, 5 for sometimes, or press zero to repeat the question', options: options};
                 callback(question);
             }
         });
