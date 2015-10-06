@@ -47,7 +47,7 @@ function begin(callback) {
                     text:$(a).text()
                 });
             });
-            question = { message: reg.exec(response)[2] + ' Press 1 for animal, 2 for vegetable, 3 for mineral, 4 for other or 5 for unknown', options: options};
+            question = { message: reg.exec(response)[2] + ' Press 1 for animal, 2 for vegetable, 3 for mineral, 4 for other or 5 for unknown or press 0 to repeat the question', options: options};
             $('a').each(function(i, a) {
                 console.log($(a).text());
             });
@@ -82,7 +82,7 @@ function next(option, callback) {
                     });
                 });
 
-                question = { message: reg.exec(response)[2] + ' Press 1 for yes, 2 for no, 3 for unknown, 4 for irrelevant or 5 for sometimes', options: options};
+                question = { message: reg.exec(response)[2] + ' Press 1 for yes, 2 for no, 3 for unknown, 4 for irrelevant or 5 for sometimes or press 0 to repeat the question', options: options};
                 callback(question);
             }
         });
@@ -109,15 +109,19 @@ indexRouter.get('/app', function(req, res) {
         } else {
             var option = parseInt(req.query['Digits'].pop())-1;
         }
-        next(option, function(question) {
+        if(option===0) {
             res.end(next_template({question_message:question.message}));
-        });
+        } else{
+            next(option, function(question) {
+                res.end(next_template({question_message:question.message}));
+            });
+        }
     } else {
         begin(function(question) {
             if(question.success) {
-
+                res.end(success_template());
             } else if (question.give_up) {
-
+                res.end(giveup_template());
             } else {
                 res.end(begin_template({question_message:question.message}));
             }
