@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Say voice="woman" language="en">You pressed <%- option %></Say>
+    <Gather timeout="30" numDigits="1" method="get">
+        <Say voice="woman" language="en"><%- question_message %></Say>
+    </Gather>
+
 </Response>

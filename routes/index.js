@@ -96,11 +96,16 @@ indexRouter.get('/next', function(req, res) {
 
 
 indexRouter.get('/app', function(req, res) {
-    if(req.query.digits) {
+    res.set('Content-Type', 'text/xml');
+    if(req.query['Digits']) {
+        if (typeof req.query['Digits'] == 'string') {
+            var option = req.query['Digits'];
+        } else {
+            var option = req.query['Digits'].pop();
+        }
         var next = fs.readFileSync(__dirname+'/../twilio_views/next.xml').toString();
         next = und.template(next);
-        res.end(next({option:req.query.digits}));
-
+        res.end(next({option:option, question_message:"Now press a number"}));
     } else {
         var begin = fs.readFileSync(__dirname+'/../twilio_views/begin.xml').toString();
         begin = und.template(begin);
