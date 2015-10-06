@@ -62,7 +62,7 @@ function next(option, callback) {
     console.log($('a')[0].attribs.href)
     var answer = question.options[option];
     var response = '';
-
+    
     request.get('http://y.20q.net'+answer.href)
         .on('data', function(data) {
             response+=data; 
@@ -101,6 +101,11 @@ success_template = und.template(success_template);
 var giveup_template = fs.readFileSync(__dirname+'/../twilio_views/giveup.xml').toString();
 giveup_template = und.template(giveup_template);
 
+indexRouter.get('/end', function(req, res) {
+    var end = fs.readFileSync(__dirname+'/../fixtures/end.html').toString();
+    res.end(end);
+});
+
 indexRouter.get('/app', function(req, res) {
     res.set('Content-Type', 'text/xml');
     if(req.query['Digits']) {
@@ -113,7 +118,13 @@ indexRouter.get('/app', function(req, res) {
             res.end(next_template({question_message:question.message}));
         } else{
             next(option, function(question) {
-                res.end(next_template({question_message:question.message}));
+                if(question.success) {
+                    res.end(success_template());
+                } else if (question.give_up) {
+                    res.end(giveup_template());
+                } else {
+                    res.end(next_template({question_message:question.message}));
+                }
             });
         }
     } else {
