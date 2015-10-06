@@ -30,7 +30,9 @@ var $;
 
 var reg = new RegExp(/Q[0-9]+\.\s*(&nbsp;)?(.*)<br>/);
 
-indexRouter.get('/begin', function(req, res) {
+
+
+function begin(callback) {
     setup.makeRequest(function(start_url) {
         var response = '';
         request.post(start_url, { form: { sex: 77, age: 33, ccode: 16707, cctkr: "CA,LV,RU,AX", submit: "Play"}}).on('data', function(data) {
@@ -49,20 +51,14 @@ indexRouter.get('/begin', function(req, res) {
             $('a').each(function(i, a) {
                 console.log($(a).text());
             });
-            res.end(JSON.stringify(question));
+            callback(question);
         });
     });
+}
 
-});
 
-indexRouter.get('/next', function(req, res) {
-    debugger;
-    if(req.query.option) {
-        var option = req.query.option;
-    } else {
-        var option = 0;
-    }
-    // @TODO insert next request here
+function next(option, callback) {
+
     console.log($('a')[0].attribs.href)
     var answer = question.options[option];
     var response = '';
@@ -72,9 +68,9 @@ indexRouter.get('/next', function(req, res) {
             response+=data; 
         }).on('end', function() {
             if(response.indexOf('You were thinking')!==-1) {
-                res.end(JSON.stringify({success:true}));
+                callback({success:true});
             } else if (response.indexOf('You won')!==-1) {
-                res.end(JSON.stringify({give_up:true}));
+                callback({give_up:true});
             } else {
                 $ = cheerio.load(response);
                 console.log(response);
@@ -87,29 +83,45 @@ indexRouter.get('/next', function(req, res) {
                 });
 
                 question = { message: reg.exec(response)[2] + ' Press 1 for yes, 2 for no, 3 for unknown, 4 for irrelevant or 5 for sometimes', options: options};
-                res.end(JSON.stringify(question));
+                callback(question);
             }
         });
+}
+
+var next_template = fs.readFileSync(__dirname+'/../twilio_views/next.xml').toString();
+next_template = und.template(next_template);
 
 
-});
+var begin_template = fs.readFileSync(__dirname+'/../twilio_views/begin.xml').toString();
+begin_template = und.template(begin_template);
 
+var success_template = fs.readFileSync(__dirname+'/../twilio_views/success.xml').toString();
+success_template = und.template(success_template);
+
+var giveup_template = fs.readFileSync(__dirname+'/../twilio_views/giveup.xml').toString();
+giveup_template = und.template(giveup_template);
 
 indexRouter.get('/app', function(req, res) {
     res.set('Content-Type', 'text/xml');
     if(req.query['Digits']) {
         if (typeof req.query['Digits'] == 'string') {
-            var option = req.query['Digits'];
+            var option = parseInt(req.query['Digits'])-1;
         } else {
-            var option = req.query['Digits'].pop();
+            var option = parseInt(req.query['Digits'].pop())-1;
         }
-        var next = fs.readFileSync(__dirname+'/../twilio_views/next.xml').toString();
-        next = und.template(next);
-        res.end(next({option:option, question_message:"Now press a number"}));
+        next(option, function(question) {
+            res.end(next_template({question_message:question.message}));
+        });
     } else {
-        var begin = fs.readFileSync(__dirname+'/../twilio_views/begin.xml').toString();
-        begin = und.template(begin);
-        res.end(begin({question_message:"Press 1 for yes and 2 for no"}));
+        begin(function(question) {
+            if(question.success) {
+
+            } else if (question.give_up) {
+
+            } else {
+                res.end(begin_template({question_message:question.message}));
+            }
+        });
     }
 });
 
