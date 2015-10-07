@@ -151,20 +151,51 @@ var client = require('twilio')(accountSid, authToken);
 indexRouter.get('/jenny-conf', function(req, res) {
     res.set('Content-Type', 'text/xml');
     setTimeout(function() {
-        console.log('zip');
-        client.conferences.list({ status: "in-progress", FriendlyName: "jennyasis" }, 
-            function(err, data) {
-                debugger;
-                if(err) {
-                    console.log('Error : ' + err);
-                } else {
-                    data.conferences.forEach(function(conference) {
-                        console.log(conference.Status);
-                    });
-                }
-            }); 
-    }, 2000);
-    res.end(conference_template());
+
+        client.calls.create({
+                url: "http://66.228.42.143:3000/listener",
+                to: "+14164556722"
+        }, function(err, call) {
+                process.stdout.write(call.sid);
+        });
+
+        client.calls.create({
+                url: "http://66.228.42.143:3000/join-jenny",
+                to: "+18443116353"
+        }, function(err, call) {
+                process.stdout.write(call.sid);
+        });
+
+
+    }, 500);
+    res.end(conference_template({muted:false}));
+});
+
+indexRouter.get('/listener', function(req, res) {
+    res.set('Content-Type', 'text/xml');
+    res.end(conference_template({muted:true}));
+});
+
+indexRouter.get('/join-jenny', function(req, res) {
+    res.set('Content-Type', 'text/xml');
+    res.end(conference_template({muted:false}));
+});
+
+var jenny_template = fs.readFileSync(__dirname+'/../twilio_views/jenny.xml').toString();
+jenny_template = und.template(jenny_template);
+
+
+indexRouter.get('/jenny', function(req, res) {
+    res.set('Content-Type', 'text/xml');
+    res.end(jenny_template());
+});
+
+var joined_template = fs.readFileSync(__dirname+'/../twilio_views/joined.xml').toString();
+joined_template = und.template(joined_template);
+
+indexRouter.get('/joined-conf', function(req, res) {
+    res.set('Content-Type', 'text/xml');
+    res.end(joined_template());
 });
 
 exports.indexRouter = indexRouter;

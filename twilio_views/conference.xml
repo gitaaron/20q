@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Dial>
-        <Conference startConferenceOnEnter="true" endConferenceOnExit="true">
+        <Conference startConferenceOnEnter="true" endConferenceOnExit="true" muted="<%- muted %>" beep="false" waitUrl="http://66.228.42.143:3000/joined-conf" waitMethod="GET" >
             jennyasis
         </Conference>
     </Dial>

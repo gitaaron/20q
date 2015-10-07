@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Say voice="woman" language="en">Hello, ask me something interesting!</Say>
+    <Pause length="3"></Pause>
+    <Redirect method="get">http://66.228.42.143:3000/jenny</Redirect>
+</Response>
