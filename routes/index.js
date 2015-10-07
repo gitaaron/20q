@@ -185,9 +185,15 @@ var jenny_template = fs.readFileSync(__dirname+'/../twilio_views/jenny.xml').toS
 jenny_template = und.template(jenny_template);
 
 
+var current_message = '';
 indexRouter.get('/jenny', function(req, res) {
     res.set('Content-Type', 'text/xml');
-    res.end(jenny_template());
+    if(req.query['in_progress']) {
+        res.end(jenny_template({current_message:current_message}));
+    } else {
+        res.end(jenny_template({current_message:"Hello, what would you like?"}));
+    }
+    current_message = '';
 });
 
 var joined_template = fs.readFileSync(__dirname+'/../twilio_views/joined.xml').toString();
@@ -196,6 +202,12 @@ joined_template = und.template(joined_template);
 indexRouter.get('/joined-conf', function(req, res) {
     res.set('Content-Type', 'text/xml');
     res.end(joined_template());
+});
+
+indexRouter.post('/say', function(req, res) {
+    console.log(req.body);
+    current_message = req.body.message
+    res.end('ok');
 });
 
 exports.indexRouter = indexRouter;

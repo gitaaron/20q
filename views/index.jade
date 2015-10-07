@@ -1,6 +1,7 @@
 extends layout
 
 block content
-  h1= title
-  //content goes here
-
+    form(id="chatter")
+        input(type="text") 
+        button(type="submit") Submit 
+    ul(id="message")
