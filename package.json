@@ -12,6 +12,7 @@
     "morgan": "~1.0.0",
     "request": "^2.64.0",
     "static-favicon": "~1.0.1",
+    "twilio": "^2.4.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

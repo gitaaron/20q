@@ -140,4 +140,31 @@ indexRouter.get('/app', function(req, res) {
     }
 });
 
+var conference_template = fs.readFileSync(__dirname+'/../twilio_views/conference.xml').toString();
+conference_template = und.template(conference_template);
+
+// // These vars are your accountSid and authToken from twilio.com/user/account
+var accountSid = 'AC49cc42541e4f354d87f1b6871cd9fb7a';
+var authToken = "a7cb1e44cfcc82a00cbcab2af5258753";
+var client = require('twilio')(accountSid, authToken);
+
+indexRouter.get('/jenny-conf', function(req, res) {
+    res.set('Content-Type', 'text/xml');
+    setTimeout(function() {
+        console.log('zip');
+        client.conferences.list({ status: "in-progress", FriendlyName: "jennyasis" }, 
+            function(err, data) {
+                debugger;
+                if(err) {
+                    console.log('Error : ' + err);
+                } else {
+                    data.conferences.forEach(function(conference) {
+                        console.log(conference.Status);
+                    });
+                }
+            }); 
+    }, 2000);
+    res.end(conference_template());
+});
+
 exports.indexRouter = indexRouter;
